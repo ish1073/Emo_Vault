@@ -216,8 +216,18 @@ public class DecisionAnalysisEngine {
                                               List<String> regrets, List<String> habits) {
         String optionA = decision.getOptionA();
         String optionB = decision.getOptionB();
-        String reasoning = "";
-        String recommended = "";
+        String reasoning = "Based on your emotional patterns and history, both options have been evaluated.";
+        String recommended = "A"; // Default to A if no clear winner
+        
+        // Ensure risk levels are not null
+        if (riskA == null) riskA = "Medium";
+        if (riskB == null) riskB = "Medium";
+        
+        // Ensure emotional outcomes are not null
+        String outcomeA = decision.getEmotionalOutcomeA();
+        String outcomeB = decision.getEmotionalOutcomeB();
+        if (outcomeA == null) outcomeA = "Stable & Manageable";
+        if (outcomeB == null) outcomeB = "Stable & Manageable";
         
         // Rule 1: If one option has high risk and other is low/medium, pick the safer one
         if (riskA.equals("High") && !riskB.equals("High")) {
@@ -229,12 +239,10 @@ public class DecisionAnalysisEngine {
         }
         // Rule 2: If both have same risk, check emotional outcomes
         else if (riskA.equals(riskB)) {
-            if (decision.getEmotionalOutcomeA().contains("Growth") || 
-                decision.getEmotionalOutcomeA().contains("Joy")) {
+            if (outcomeA.contains("Growth") || outcomeA.contains("Joy")) {
                 recommended = "A";
                 reasoning = "Both options carry similar risk, but Option A offers better emotional benefits.";
-            } else if (decision.getEmotionalOutcomeB().contains("Growth") || 
-                       decision.getEmotionalOutcomeB().contains("Joy")) {
+            } else if (outcomeB.contains("Growth") || outcomeB.contains("Joy")) {
                 recommended = "B";
                 reasoning = "Both options carry similar risk, but Option B offers better emotional benefits.";
             } else {

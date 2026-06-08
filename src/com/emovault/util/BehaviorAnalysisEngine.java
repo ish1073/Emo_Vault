@@ -191,9 +191,9 @@ public class BehaviorAnalysisEngine {
             suggestions.add("🔄 You have frequent regrets. Try a 'corrective habit' - small actions to address past mistakes.");
         }
         
-        // Rule 4: Habit consistency
-        Integer totalHabits = (Integer) habitData.getOrDefault("total_habits", 0);
-        Integer activeHabits = (Integer) habitData.getOrDefault("active_habits", 0);
+        // Rule 4: Habit consistency - safely handle Number types (COUNT(*) returns Long)
+        int totalHabits = getNumberValue(habitData.get("total_habits"));
+        int activeHabits = getNumberValue(habitData.get("active_habits"));
         
         if (totalHabits > 0 && activeHabits == 0) {
             suggestions.add("🏗️ Reactivate a habit to build consistency and structure in your life.");
@@ -219,5 +219,17 @@ public class BehaviorAnalysisEngine {
         }
         
         return suggestions.subList(0, Math.min(suggestions.size(), 5)); // Max 5 suggestions
+    }
+    
+    /**
+     * Safely extract int value from Number objects (handles Long, Integer, etc.)
+     * COUNT(*) returns Long, not Integer
+     */
+    private static int getNumberValue(Object value) {
+        if (value == null) return 0;
+        if (value instanceof Number) {
+            return ((Number) value).intValue();
+        }
+        return 0;
     }
 }

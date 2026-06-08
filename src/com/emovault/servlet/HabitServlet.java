@@ -2,6 +2,7 @@ package com.emovault.servlet;
 
 import com.emovault.dao.HabitDAO;
 import com.emovault.model.Habit;
+import com.emovault.service.DataService;
 import com.emovault.util.DBConnection;
 import com.emovault.util.Expert;
 import javax.servlet.*;
@@ -151,6 +152,8 @@ public class HabitServlet extends HttpServlet {
                     
                     boolean success = habitDAO.addHabit(habit);
                     if (success) {
+                        // Clear cache to ensure fresh analysis data
+                        DataService.clearUserCache(userId);
                         System.out.println("[HabitServlet] ✓ New habit added successfully: " + name + " (User: " + userId + ")");
                     } else {
                         System.out.println("[HabitServlet] ✗ Failed to add habit: " + name + " (User: " + userId + ")");
@@ -164,6 +167,8 @@ public class HabitServlet extends HttpServlet {
                     System.out.println("[HabitServlet] Processing complete action for habit: " + habitId);
                     boolean isCompleted = habitDAO.completeHabitToday(habitId);
                     if (isCompleted) {
+                        // Clear cache to ensure fresh analysis data
+                        DataService.clearUserCache(userId);
                         System.out.println("[HabitServlet] ✓ Habit marked complete: " + habitId);
                         int newStreak = habitDAO.getCurrentStreakSimple(habitId);
                         System.out.println("[HabitServlet] New streak after completion: " + newStreak);
@@ -178,6 +183,8 @@ public class HabitServlet extends HttpServlet {
                 try {
                     int habitId = Integer.parseInt(request.getParameter("habitId"));
                     if (habitDAO.deleteHabit(habitId)) {
+                        // Clear cache to ensure fresh analysis data
+                        DataService.clearUserCache(userId);
                         System.out.println("[HabitServlet] Habit deleted: " + habitId);
                     }
                 } catch (NumberFormatException e) {

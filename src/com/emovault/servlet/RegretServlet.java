@@ -2,6 +2,7 @@ package com.emovault.servlet;
 
 import com.emovault.dao.*;
 import com.emovault.model.*;
+import com.emovault.service.DataService;
 import com.emovault.util.DBConnection;
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -97,6 +98,8 @@ public class RegretServlet extends HttpServlet {
                     regret.setTag(tag);
 
                     if (regretDAO.addRegret(regret)) {
+                        // Clear cache to ensure fresh analysis data
+                        DataService.clearUserCache(userId);
                         request.setAttribute("success", "Regret added successfully");
                     } else {
                         request.setAttribute("error", "Failed to add regret");
@@ -109,6 +112,8 @@ public class RegretServlet extends HttpServlet {
                 if (regretIdStr != null && !regretIdStr.isEmpty()) {
                     int regretId = Integer.parseInt(regretIdStr);
                     if (regretDAO.deleteRegret(regretId)) {
+                        // Clear cache to ensure fresh analysis data
+                        DataService.clearUserCache(userId);
                         request.setAttribute("success", "Regret deleted successfully");
                     } else {
                         request.setAttribute("error", "Failed to delete regret");

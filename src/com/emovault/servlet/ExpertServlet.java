@@ -26,41 +26,49 @@ public class ExpertServlet extends HttpServlet {
     }
     
     /**
-     * Handle Expert login
+     * Handle Expert login using email
      */
     private void handleExpertLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String expertId = request.getParameter("expertId");
+        String email = request.getParameter("email");
         String password = request.getParameter("password");
         String rememberMe = request.getParameter("rememberMe");
         
-        if (expertId == null || expertId.trim().isEmpty() || 
+        // Validate input
+        if (email == null || email.trim().isEmpty() || 
             password == null || password.trim().isEmpty()) {
             response.sendRedirect(request.getContextPath() + "/expert_login.jsp?error=invalid");
             return;
         }
         
-        // Verify credentials
-        int id = expertDAO.verifyExpertCredentials(expertId, password);
+        // Trim and normalize email
+        email = email.trim().toLowerCase();
+        
+        // Verify credentials using email
+        int id = expertDAO.verifyExpertCredentialsByEmail(email, password);
         
         if (id > 0) {
             // Credentials valid - create session
             HttpSession session = request.getSession();
             session.setAttribute("expertId", id);
-            session.setAttribute("expertUserId", expertId);
+            session.setAttribute("expertEmail", email);
             
             // Get expert info
             String[] expertInfo = expertDAO.getExpertInfo(id);
             if (expertInfo != null) {
                 session.setAttribute("expertName", expertInfo[0]);
                 session.setAttribute("expertRole", expertInfo[1]);
+            } else {
+                // Fallback if info not found
+                session.setAttribute("expertName", "Expert");
+                session.setAttribute("expertRole", "EXPERT");
             }
             
             // Set session timeout (30 minutes)
             session.setMaxInactiveInterval(30 * 60);
             
-            // Remember me - set persistent cookie
+            // Remember me - set persistent cookie (store email, not expert ID)
             if ("true".equals(rememberMe)) {
-                Cookie cookie = new Cookie("expertRemember", expertId);
+                Cookie cookie = new Cookie("expertRemember", email);
                 cookie.setMaxAge(30 * 24 * 60 * 60); // 30 days
                 cookie.setPath(request.getContextPath());
                 cookie.setHttpOnly(true);
@@ -72,11 +80,11 @@ public class ExpertServlet extends HttpServlet {
             expertDAO.logExpertActivity(id, "LOGIN", request.getRemoteAddr());
             expertDAO.updateLastLogin(id);
             
-            System.out.println("[ExpertServlet] Expert " + expertId + " logged in successfully");
+            System.out.println("[ExpertServlet] Expert " + email + " logged in successfully");
             response.sendRedirect(request.getContextPath() + "/expert_dashboard");
         } else {
             // Invalid credentials
-            System.out.println("[ExpertServlet] Failed login attempt for: " + expertId);
+            System.out.println("[ExpertServlet] Failed login attempt for: " + email);
             response.sendRedirect(request.getContextPath() + "/expert_login.jsp?error=invalid");
         }
     }
@@ -86,11 +94,11 @@ public class ExpertServlet extends HttpServlet {
      */
     private void handleExpertLogout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false);
-        String expertUserId = null;
+        String expertEmail = null;
         Integer expertIdNum = null;
         
         if (session != null) {
-            expertUserId = (String) session.getAttribute("expertUserId");
+            expertEmail = (String) session.getAttribute("expertEmail");
             expertIdNum = (Integer) session.getAttribute("expertId");
             
             if (expertIdNum != null) {
@@ -106,7 +114,7 @@ public class ExpertServlet extends HttpServlet {
         cookie.setPath(request.getContextPath());
         response.addCookie(cookie);
         
-        System.out.println("[ExpertServlet] Expert logged out: " + (expertUserId != null ? expertUserId : "unknown"));
+        System.out.println("[ExpertServlet] Expert logged out: " + (expertEmail != null ? expertEmail : "unknown"));
         response.sendRedirect(request.getContextPath() + "/expert_login.jsp");
     }
     

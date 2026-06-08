@@ -14,36 +14,57 @@ html, body {
     height: 100%;
 }
 
-/* ===== COLOR PALETTE (WARM CAFÉ + DREAMY) ===== */
+/* ===== COLOR PALETTE (MODERN EMOTIONAL) ===== */
 :root {
-    /* Core Brand Colors */
-    --color-heather: #877499;            /* Depth, headers, emphasis */
-    --color-viridian: #679F9F;           /* Buttons, actions, interactive */
-    --color-sandstone: #E6D4BF;          /* Main background, cards */
-    --color-candy: #E18299;              /* Emotional highlights, accents */
-    --color-azur: #2D4729;               /* Text, grounding, dark accents */
+    /* Core Emotional Palette */
+    --color-van-dyke: #3D2B27;              /* Primary base background, depth */
+    --color-english-violet: #443C5E;        /* Secondary bg, navbar, headers */
+    --color-puce: #BF7185;                  /* Primary accent, buttons */
+    --color-pale-dogwood: #E2C2BC;          /* Card backgrounds, content */
+    --color-rose-quartz: #A99FBF;           /* Borders, hover states */
+    
+    /* For backward compatibility with old variables */
+    --color-heather: #BF7185;               /* Changed to Puce */
+    --color-viridian: #BF7185;              /* Changed to Puce */
+    --color-sandstone: #3D2B27;             /* Changed to Van Dyke */
+    --color-candy: #BF7185;                 /* Changed to Puce */
+    --color-azur: #443C5E;                  /* Changed to English Violet */
+    
+    /* Semantic Extensions */
+    --color-text-primary: #E2C2BC;          /* Headings - Pale Dogwood */
+    --color-text-secondary: #D4B5AD;        /* Body text - muted pinkish */
+    --color-text-muted: #BFA7A0;            /* Subtle text */
+    --color-border: #A99FBF;                /* Rose Quartz */
+    --color-border-light: rgba(169, 159, 191, 0.3);
+    
+    /* Semantic Colors */
+    --color-success: #BF7185;               /* Puce for positive actions */
+    --color-warning: #D4B5AD;               /* Muted for warnings */
+    --color-danger: #BF7185;                /* Puce for destructive actions */
+    --color-info: #A99FBF;                  /* Rose Quartz for info */
     
     /* Neutral Palette */
     --color-white: #FFFFFF;
-    --color-cream: #FBF8F3;              /* Warm off-white */
-    --color-warm-gray: #D4C4B9;          /* Subtle dividers */
-    --color-shadow-light: rgba(45, 71, 41, 0.08);
+    --color-cream: #FBF8F3;                 /* Warm off-white */
+    --color-warm-gray: #BFA7A0;             /* Subtle dividers */
+    --color-shadow-light: rgba(61, 43, 39, 0.08);
     
-    /* Semantic Colors */
-    --color-success: #679F9F;            /* Viridian */
-    --color-warning: #E18299;            /* Candy */
-    --color-danger: #E18299;             /* Candy */
-    --color-info: #877499;               /* Heather */
+    /* Backgrounds */
+    --bg-primary: #3D2B27;
+    --bg-secondary: #443C5E;
+    --bg-tertiary: #2A1F1B;
+    --bg-card: rgba(226, 194, 188, 0.45);   /* Pale Dogwood semi-transparent */
+    --bg-overlay: rgba(61, 43, 39, 0.6);
     
-    /* Gradients */
-    --gradient-bg-primary: linear-gradient(180deg, #FBF8F3 0%, #E6D4BF 100%);
-    --gradient-bg-secondary: linear-gradient(135deg, #E6D4BF 0%, #F0E8DE 100%);
-    --gradient-button: linear-gradient(135deg, #679F9F 0%, #5F9394 100%);
-    --gradient-accent: linear-gradient(135deg, #E18299 0%, #D96A88 100%);
-    --gradient-text-warm: linear-gradient(135deg, #877499 0%, #E18299 100%);
+    /* Gradients - Layered and Cinematic */
+    --gradient-bg-primary: linear-gradient(135deg, #3D2B27 0%, #443C5E 50%, #3D2B27 100%);
+    --gradient-bg-secondary: linear-gradient(180deg, #443C5E 0%, #3D2B27 50%, #443C5E 100%);
+    --gradient-button: linear-gradient(135deg, #BF7185 0%, #A99FBF 50%, #BF7185 100%);
+    --gradient-accent: linear-gradient(135deg, #BF7185 0%, #A99FBF 100%);
+    --gradient-text-warm: linear-gradient(135deg, #BF7185 0%, #A99FBF 100%);
     
     /* Soft overlays for dreamy effect */
-    --gradient-haze: radial-gradient(circle at 50% 50%, rgba(230, 212, 191, 0.4) 0%, transparent 70%);
+    --gradient-haze: radial-gradient(circle at 50% 50%, rgba(226, 194, 188, 0.4) 0%, transparent 70%);
     
     /* Typography */
     --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
@@ -398,8 +419,8 @@ select.form-control {
     top: 0;
     width: 280px;
     height: 100vh;
-    background: var(--color-white);
-    border-right: 1px solid var(--color-warm-gray);
+    background: #443C5E;
+    border-right: 1px solid rgba(202, 169, 243, 0.2);
     padding: var(--space-xl) var(--space-lg);
     z-index: var(--z-fixed) - 1;
     overflow-y: auto;
@@ -412,14 +433,14 @@ select.form-control {
 .sidebar-header {
     margin-bottom: var(--space-2xl);
     padding-bottom: var(--space-lg);
-    border-bottom: 2px solid var(--color-candy);
+    border-bottom: 2px solid rgba(202, 169, 243, 0.3);
 }
 
 .sidebar-brand {
     font-family: var(--font-secondary);
     font-size: var(--font-size-xl);
     font-weight: var(--font-weight-bold);
-    color: var(--color-heather);
+    color: #FFFFFF;
     margin: 0;
 }
 
@@ -439,16 +460,17 @@ select.form-control {
     gap: var(--space-md);
     padding: var(--space-md) var(--space-lg);
     border-radius: var(--radius-md);
-    color: var(--color-azur);
+    color: rgba(255, 255, 255, 0.85);
     transition: all var(--transition-base);
     font-weight: var(--font-weight-medium);
 }
 
 .sidebar-nav a:hover,
 .sidebar-nav a.active {
-    background: var(--color-sandstone);
-    color: var(--color-viridian);
+    background: rgba(202, 169, 243, 0.2);
+    color: #FFFFFF;
     padding-left: var(--space-xl);
+    box-shadow: inset 0 0 12px rgba(202, 169, 243, 0.3);
 }
 
 /* Sidebar Toggle Button */
@@ -492,19 +514,19 @@ select.form-control {
 
 .sidebar-divider {
     height: 1px;
-    background: var(--color-warm-gray);
+    background: rgba(202, 169, 243, 0.2);
     margin: var(--space-lg) 0;
     list-style: none;
 }
 
 .sidebar-logout {
-    color: var(--color-candy) !important;
+    color: rgba(202, 169, 243, 0.9) !important;
 }
 
 .sidebar-logout:hover,
 .sidebar-logout.active {
-    background: rgba(225, 130, 153, 0.1) !important;
-    color: var(--color-candy) !important;
+    background: rgba(202, 169, 243, 0.15) !important;
+    color: #FFFFFF !important;
 }
 
 /* Collapsed Sidebar State - Using inline styles instead */

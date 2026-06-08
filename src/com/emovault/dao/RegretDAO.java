@@ -120,25 +120,24 @@ public class RegretDAO {
                 tagFrequency.put(rs.getString("tag"), rs.getInt("count"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("[RegretDAO] Error getting tag frequency: " + e.getMessage());
         }
+
         return tagFrequency;
     }
 
-    // Get most common tag
-    public String getMostCommonTag(int userId) {
-        String query = "SELECT tag FROM regrets WHERE user_id = ? GROUP BY tag ORDER BY COUNT(*) DESC LIMIT 1";
-
+    // Get count of all regrets for a user
+    public int countRegrets(int userId) {
+        String query = "SELECT COUNT(*) as count FROM regrets WHERE user_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
-
             if (rs.next()) {
-                return rs.getString("tag");
+                return rs.getInt("count");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("[RegretDAO] Error counting regrets: " + e.getMessage());
         }
-        return null;
+        return 0;
     }
 }

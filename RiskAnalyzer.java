@@ -123,6 +123,23 @@ public class RiskAnalyzer {
         return allAlerts;
     }
 
+    // Get total regrets count for a user
+    public int getRegretsCount(int userId) {
+        try {
+            String query = "SELECT COUNT(*) as count FROM regrets WHERE user_id = ?";
+            java.sql.PreparedStatement stmt = connection.prepareStatement(query);
+            stmt.setInt(1, userId);
+            java.sql.ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt("count");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     // Get habit suggestions based on regret tags
     public List<String> suggestHabitsFromRegrets(int userId) {
         List<String> suggestions = new ArrayList<>();

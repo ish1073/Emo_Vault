@@ -136,8 +136,8 @@ public class PatternDetector {
      */
     private void detectRepeatedTriggers(int userId) {
         try {
-            String query = "SELECT trigger, COUNT(*) as count FROM emotion_entries " +
-                          "WHERE user_id = ? GROUP BY trigger HAVING count > 2 ORDER BY count DESC LIMIT 3";
+            String query = "SELECT `trigger`, COUNT(*) as count FROM emotion_entries " +
+                          "WHERE user_id = ? GROUP BY `trigger` HAVING count > 2 ORDER BY count DESC LIMIT 3";
             Connection conn = DBConnection.getConnection();
             
             if (conn != null) {

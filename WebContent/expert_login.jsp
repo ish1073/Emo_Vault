@@ -167,7 +167,7 @@
                 if ("invalid".equals(error)) {
             %>
                 <div class="error-message">
-                    ✗ Invalid Expert ID or Password. Please try again.
+                    ✗ Invalid Email or Password. Please try again.
                 </div>
             <% 
                 } else if (request.getAttribute("error") != null) { 
@@ -183,8 +183,8 @@
                 <input type="hidden" name="action" value="login">
                 
                 <div class="form-group">
-                    <label class="form-label" for="expertId">Expert ID</label>
-                    <input type="text" id="expertId" name="expertId" class="form-control" placeholder="e.g., expert_main" required>
+                    <label class="form-label" for="email">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="e.g., expert@emovault.local" required>
                 </div>
 
                 <div class="form-group">

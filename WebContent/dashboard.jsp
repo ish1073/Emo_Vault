@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="com.emovault.model.Habit" %>
+<%@ page import="java.util.*" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,66 +8,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EmoVault - Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="emovault-complete-ui.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/design-system.css">
     <style>
-        .dashboard-layout {
-            display: grid;
-            grid-template-columns: 260px 1fr;
+        body {
+            background: var(--gradient-bg-primary);
+            margin: 0;
+            padding: 0;
+        }
+
+        .dashboard-container {
+            display: flex;
             min-height: 100vh;
-            gap: 0;
         }
 
-        .dashboard-sidebar {
-            background: var(--color-english-violet);
-            padding: var(--space-lg);
-            overflow-y: auto;
-            box-shadow: var(--shadow-md);
-        }
-
-        .sidebar-logo {
-            color: var(--color-pale-dogwood);
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: var(--space-2xl);
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: var(--space-3xl) var(--space-2xl) var(--space-4xl) var(--space-2xl);
             display: flex;
-            align-items: center;
-            gap: var(--space-md);
-        }
-
-        .sidebar-nav {
-            list-style: none;
-        }
-
-        .nav-item {
-            margin-bottom: var(--space-sm);
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-            padding: var(--space-md) var(--space-lg);
-            color: var(--color-pale-dogwood);
-            text-decoration: none;
-            border-radius: var(--radius-md);
-            transition: all var(--transition-fast);
-            font-weight: 600;
-        }
-
-        .nav-link:hover {
-            background: rgba(191, 113, 133, 0.2);
-            color: var(--color-pale-dogwood);
-        }
-
-        .nav-link.active {
-            background: var(--color-puce);
-            color: #FFF;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-height: 100vh;
+            transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
         }
 
         .dashboard-main {
-            background: var(--color-van-dyke);
-            padding: var(--space-xl);
-            overflow-y: auto;
+            width: 100%;
+            max-width: 1200px;
         }
 
         .dashboard-header {
@@ -295,12 +264,8 @@
         }
 
         @media (max-width: 768px) {
-            .dashboard-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .dashboard-sidebar {
-                display: none;
+            .main-content {
+                margin-left: 0;
             }
 
             .dashboard-grid {
@@ -310,114 +275,43 @@
     </style>
 </head>
 <body>
-    <div class="dashboard-layout">
         <!-- Sidebar -->
-        <div class="dashboard-sidebar">
-            <div class="sidebar-logo">
-                💜 EmoVault
-            </div>
-
-            <ul class="sidebar-nav">
-                <li class="nav-item">
-                    <a href="dashboard_complete.jsp" class="nav-link active">
-                        <span>🏠</span>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="emotion_new.jsp" class="nav-link">
-                        <span>😊</span>
-                        <span>Emotions</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="diary_complete.jsp" class="nav-link">
-                        <span>📔</span>
-                        <span>Diary</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="behavior_complete.jsp" class="nav-link">
-                        <span>🧠</span>
-                        <span>Behavior</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="regret_complete.jsp" class="nav-link">
-                        <span>😞</span>
-                        <span>Regrets</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="habit_complete.jsp" class="nav-link">
-                        <span>🔁</span>
-                        <span>Habits</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="decision_complete.jsp" class="nav-link">
-                        <span>🎯</span>
-                        <span>Decisions</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="timecapsule_complete.jsp" class="nav-link">
-                        <span>⏳</span>
-                        <span>Time Capsule</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="analytics_complete.jsp" class="nav-link">
-                        <span>📊</span>
-                        <span>Analytics</span>
-                    </a>
-                </li>
-            </ul>
-
-            <hr style="border: none; border-top: 1px solid rgba(191, 113, 133, 0.3); margin: var(--space-2xl) 0;">
-
-            <div class="user-profile" style="margin-top: var(--space-xl);">
-                <div class="user-avatar">👤</div>
-                <div>
-                    <div class="user-name">Sarah</div>
-                    <div style="color: var(--color-text-muted); font-size: 0.8rem;">Settings</div>
-                </div>
-            </div>
-        </div>
+        <% request.setAttribute("currentPage", "dashboard"); %>
+        <%@ include file="components/sidebar.jsp" %>
 
         <!-- Main Content -->
-        <div class="dashboard-main">
+        <div class="main-content dashboard-main">
             <div class="dashboard-header">
-                <h1 class="dashboard-title">Welcome back, Sarah 👋</h1>
+                <h1 class="dashboard-title">Welcome back, <%= request.getAttribute("userName") != null ? request.getAttribute("userName") : "User" %> 👋</h1>
                 <div class="user-profile">
                     <div>
                         <div class="user-name">Today's Date</div>
-                        <div style="color: var(--color-text-muted); font-size: 0.85rem;">April 11, 2024</div>
+                        <div style="color: var(--color-text-muted); font-size: 0.85rem;"><%= request.getAttribute("todayDate") != null ? request.getAttribute("todayDate") : "" %></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Quick Stats -->
+            <!-- Quick Stats - Real-time Habit Data -->
             <div class="quick-stats">
                 <div class="stat-box">
-                    <div class="stat-icon">😊</div>
-                    <div class="stat-number">7.2</div>
+                    <div class="stat-icon"><%= request.getAttribute("todayMoodEmoji") != null ? request.getAttribute("todayMoodEmoji") : "😊" %></div>
+                    <div class="stat-number"><%= request.getAttribute("moodScore") != null ? request.getAttribute("moodScore") : "0.0" %></div>
                     <div class="stat-label">Today's Mood</div>
                 </div>
                 <div class="stat-box">
                     <div class="stat-icon">🎯</div>
-                    <div class="stat-number">5/5</div>
+                    <div class="stat-number"><%= request.getAttribute("habitsCompletedToday") != null ? request.getAttribute("habitsCompletedToday") : "0" %>/<%= request.getAttribute("totalHabits") != null ? request.getAttribute("totalHabits") : "0" %></div>
                     <div class="stat-label">Habits Completed</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-icon">⏳</div>
-                    <div class="stat-number">42</div>
-                    <div class="stat-label">Day Streak</div>
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-number"><%= request.getAttribute("habitStreak") != null ? request.getAttribute("habitStreak") : "0" %></div>
+                    <div class="stat-label">Best Streak</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-icon">📔</div>
-                    <div class="stat-number">28</div>
-                    <div class="stat-label">Journal Entries</div>
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-number"><%= request.getAttribute("habitConsistency") != null ? String.format("%.0f", (Double) request.getAttribute("habitConsistency")) : "0" %>%</div>
+                    <div class="stat-label">Consistency</div>
                 </div>
             </div>
 
@@ -428,8 +322,8 @@
                     <div class="card-title">How are you feeling today?</div>
 
                     <div class="today-mood">
-                        <div class="mood-emoji">😌</div>
-                        <div class="mood-text">Calm & Focused</div>
+                        <div class="mood-emoji"><%= request.getAttribute("todayMoodEmoji") != null ? request.getAttribute("todayMoodEmoji") : "😐" %></div>
+                        <div class="mood-text"><%= request.getAttribute("todayMoodText") != null ? request.getAttribute("todayMoodText") : "How are you feeling?" %></div>
                         <div class="mood-scale">
                             <button class="mood-btn">😭</button>
                             <button class="mood-btn">😔</button>
@@ -467,55 +361,37 @@
                     <div class="card-title">Today's Habits</div>
 
                     <div class="progress-section">
-                        <div class="progress-item">
-                            <div class="progress-label">
-                                <span>🧘 Meditation</span>
-                                <span>✓ Done</span>
+                        <%
+                            @SuppressWarnings("unchecked")
+                            List<Habit> habitsList = (List<Habit>) request.getAttribute("habitsList");
+                            @SuppressWarnings("unchecked")
+                            Map<Integer, Boolean> habitsCompletedTodayMap = (Map<Integer, Boolean>) request.getAttribute("habitsCompletedTodayMap");
+                            
+                            if (habitsList != null && !habitsList.isEmpty()) {
+                                for (Habit habit : habitsList) {
+                                    boolean completedToday = habitsCompletedTodayMap != null && habitsCompletedTodayMap.getOrDefault(habit.getHabitId(), false);
+                                    String statusText = completedToday ? "✓ Done" : "Not done";
+                                    int progressPercent = completedToday ? 100 : 0;
+                        %>
+                            <div class="progress-item">
+                                <div class="progress-label">
+                                    <span><%= habit.getName() != null ? habit.getName() : "Habit" %></span>
+                                    <span><%= statusText %></span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: <%= progressPercent %>%;"></div>
+                                </div>
                             </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 100%;"></div>
+                        <%
+                                }
+                            } else {
+                        %>
+                            <div style="text-align: center; padding: 20px; color: var(--color-text-soft);">
+                                <p>No habits tracked yet. <a href="habit_complete.jsp" style="color: var(--color-puce);">Create your first habit</a></p>
                             </div>
-                        </div>
-
-                        <div class="progress-item">
-                            <div class="progress-label">
-                                <span>💪 Exercise</span>
-                                <span>✓ Done</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 100%;"></div>
-                            </div>
-                        </div>
-
-                        <div class="progress-item">
-                            <div class="progress-label">
-                                <span>📝 Journaling</span>
-                                <span>✓ Done</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 100%;"></div>
-                            </div>
-                        </div>
-
-                        <div class="progress-item">
-                            <div class="progress-label">
-                                <span>📚 Reading</span>
-                                <span>3/20 pages</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 15%;"></div>
-                            </div>
-                        </div>
-
-                        <div class="progress-item">
-                            <div class="progress-label">
-                                <span>😴 Sleep</span>
-                                <span>6/8 hours</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 75%;"></div>
-                            </div>
-                        </div>
+                        <%
+                            }
+                        %>
                     </div>
                 </div>
 

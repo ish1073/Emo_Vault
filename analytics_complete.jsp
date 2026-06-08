@@ -1,17 +1,114 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="java.util.*" %>
+
+<%
+    Integer userId = (Integer) session.getAttribute("userId");
+    String userEmail = (String) session.getAttribute("userEmail");
+    String userName = (String) session.getAttribute("userName");
+
+    if (userId == null) {
+        response.sendRedirect(request.getContextPath() + "/login.jsp");
+        return;
+    }
+%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EmoVault - Analytics & Reports</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="emovault-complete-ui.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="modern-design-system.css">
     <style>
+        .navbar {
+            background: rgba(226, 194, 188, 0.1);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(191, 113, 133, 0.2);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(61, 43, 39, 0.08);
+        }
+
+        .navbar > div {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 0.5px;
+        }
+
+        .navbar-menu {
+            flex: 1;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+
+        .navbar-menu a {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            opacity: 0.85;
+        }
+
+        .navbar-menu a:hover {
+            opacity: 1;
+            color: var(--color-puce);
+            background: rgba(191, 113, 133, 0.1);
+        }
+
+        .navbar-menu a.active {
+            color: var(--color-puce);
+            opacity: 1;
+            background: rgba(191, 113, 133, 0.15);
+        }
+
+        .navbar-user {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .navbar-user strong {
+            color: var(--color-text-primary);
+        }
+
+        .logout-btn {
+            color: var(--color-puce);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            opacity: 0.8;
+        }
+
         .analytics-page {
-            min-height: 100vh;
-            background: var(--color-van-dyke);
-            padding: var(--space-xl);
+            min-height: calc(100vh - 80px);
+            background: var(--gradient-primary-bg);
+            padding: var(--space-xl) var(--space-lg);
         }
 
         .analytics-container {
@@ -29,8 +126,9 @@
         }
 
         .analytics-title {
-            color: var(--color-pale-dogwood);
+            color: var(--color-text-primary);
             font-size: 2.2rem;
+            font-weight: 700;
         }
 
         .date-range-selector {
@@ -40,9 +138,9 @@
 
         .date-btn {
             padding: var(--space-sm) var(--space-lg);
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            color: var(--color-pale-dogwood);
+            background: rgba(226, 194, 188, 0.2);
+            border: 1px solid var(--color-border-light);
+            color: var(--color-text-secondary);
             border-radius: var(--radius-sm);
             cursor: pointer;
             font-weight: 600;
@@ -64,12 +162,18 @@
         }
 
         .stat-card {
-            background: var(--glass-bg);
+            background: rgba(226, 194, 188, 0.15);
             backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--color-border-light);
             border-radius: var(--radius-lg);
             padding: var(--space-lg);
             animation: slideUp 0.6s ease-out;
+            transition: all var(--transition-base);
+        }
+
+        .stat-card:hover {
+            background: rgba(226, 194, 188, 0.25);
+            transform: translateY(-2px);
         }
 
         .stat-label {
@@ -105,16 +209,22 @@
         }
 
         .chart-card {
-            background: var(--glass-bg);
+            background: rgba(226, 194, 188, 0.15);
             backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--color-border-light);
             border-radius: var(--radius-lg);
             padding: var(--space-lg);
             animation: slideUp 0.6s ease-out;
+            transition: all var(--transition-base);
+        }
+
+        .chart-card:hover {
+            background: rgba(226, 194, 188, 0.25);
+            transform: translateY(-2px);
         }
 
         .chart-title {
-            color: var(--color-pale-dogwood);
+            color: var(--color-text-primary);
             font-weight: 700;
             font-size: 1.1rem;
             margin-bottom: var(--space-lg);
@@ -226,9 +336,9 @@
             align-items: center;
             gap: var(--space-lg);
             padding: var(--space-lg);
-            background: var(--glass-overlay);
+            background: rgba(169, 159, 191, 0.1);
             border-radius: var(--radius-md);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--color-border-light);
         }
 
         .trend-rank {
@@ -244,13 +354,13 @@
         }
 
         .trend-name {
-            color: var(--color-pale-dogwood);
+            color: var(--color-text-primary);
             font-weight: 700;
             margin-bottom: var(--space-xs);
         }
 
         .trend-value {
-            color: var(--color-text-soft);
+            color: var(--color-text-secondary);
             font-size: 0.9rem;
         }
 
@@ -262,7 +372,7 @@
         .trend-bar {
             width: 80px;
             height: 4px;
-            background: var(--glass-overlay);
+            background: rgba(169, 159, 191, 0.2);
             border-radius: var(--radius-xl);
             overflow: hidden;
         }
@@ -273,16 +383,16 @@
         }
 
         .insights-section {
-            background: var(--glass-bg);
+            background: rgba(226, 194, 188, 0.15);
             backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--color-border-light);
             border-radius: var(--radius-lg);
             padding: var(--space-lg);
             animation: slideUp 0.6s ease-out;
         }
 
         .insights-title {
-            color: var(--color-pale-dogwood);
+            color: var(--color-text-primary);
             font-size: 1.3rem;
             font-weight: 700;
             margin-bottom: var(--space-lg);
@@ -290,7 +400,7 @@
 
         .insight-box {
             padding: var(--space-lg);
-            background: var(--glass-overlay);
+            background: rgba(169, 159, 191, 0.1);
             border-left: 4px solid;
             border-radius: var(--radius-md);
             margin-bottom: var(--space-lg);
@@ -305,13 +415,13 @@
         }
 
         .insight-heading {
-            color: var(--color-pale-dogwood);
+            color: var(--color-text-primary);
             font-weight: 700;
             margin-bottom: var(--space-sm);
         }
 
         .insight-text {
-            color: var(--color-text-soft);
+            color: var(--color-text-secondary);
             font-size: 0.95rem;
             line-height: 1.7;
         }
@@ -330,14 +440,38 @@
                 margin-bottom: 40px;
             }
         }
-    </style>
 </head>
 <body>
-    <header style="background: var(--color-english-violet); padding: var(--space-lg); margin-bottom: var(--space-xl);">
-        <a href="dashboard_complete.jsp" style="color: var(--color-pale-dogwood); text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: var(--space-sm); width: fit-content;">
-            <span>← Back to Dashboard</span>
-        </a>
-    </header>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div>
+            <div class="navbar-brand">✨ EmoVault</div>
+            <div class="navbar-menu">
+                <a href="${pageContext.request.contextPath}/emotion.jsp">Emotions</a>
+                <a href="${pageContext.request.contextPath}/diary.jsp">Diary</a>
+                <a href="${pageContext.request.contextPath}/regret.jsp">Regrets</a>
+                <a href="${pageContext.request.contextPath}/habit.jsp">Habits</a>
+                <a href="${pageContext.request.contextPath}/alert.jsp">Alerts</a>
+                <a href="${pageContext.request.contextPath}/dashboard.jsp">Dashboard</a>
+                <a href="${pageContext.request.contextPath}/analytics_complete.jsp" class="active">Analytics</a>
+                <div class="navbar-user">
+                    <span>Welcome, <strong><%= userName != null ? userName : "User" %></strong></span>
+                    <span class="logout-btn" onclick="logout()">Logout</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function logout() {
+            fetch('${pageContext.request.contextPath}/logout', {
+                method: 'POST'
+            }).then(() => {
+                window.location.href = '${pageContext.request.contextPath}/login.jsp';
+            });
+        }
+    </script>
+
     <div class="analytics-page">
         <div class="analytics-container">
             <div class="analytics-header">

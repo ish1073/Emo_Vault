@@ -23,20 +23,13 @@
         completedTodayMap = new java.util.HashMap<>();
     }
     
-    // Calculate insights
-    int totalHabits = habits.size();
-    int activeHabits = 0;
-    int totalStreak = 0;
-    int maxStreak = 0;
-    
-    for (Habit h : habits) {
-        if (h.isActive()) activeHabits++;
-        int currentStreak = h.getCurrentStreak();
-        totalStreak += currentStreak;
-        if (currentStreak > maxStreak) maxStreak = currentStreak;
-    }
-    
-    double consistencyPercentage = totalHabits > 0 ? (double) activeHabits / totalHabits * 100 : 0;
+    // Get insights from request attributes (set by servlet with real data)
+    int totalHabits = request.getAttribute("totalHabits") != null ? (Integer) request.getAttribute("totalHabits") : habits.size();
+    int activeHabits = request.getAttribute("activeHabits") != null ? (Integer) request.getAttribute("activeHabits") : 0;
+    int totalStreak = request.getAttribute("totalStreak") != null ? (Integer) request.getAttribute("totalStreak") : 0;
+    int maxStreak = request.getAttribute("maxStreak") != null ? (Integer) request.getAttribute("maxStreak") : 0;
+    double avgConsistency = request.getAttribute("avgConsistency") != null ? (Double) request.getAttribute("avgConsistency") : 0.0;
+    double activePercentage = request.getAttribute("activePercentage") != null ? (Double) request.getAttribute("activePercentage") : 0.0;
 %>
 
 <!DOCTYPE html>
@@ -843,9 +836,9 @@
                         <!-- Consistency -->
                         <div class="insight-item">
                             <div class="insight-label">Consistency</div>
-                            <div class="insight-value"><%= String.format("%.0f", consistencyPercentage) %>%</div>
+                            <div class="insight-value"><%= String.format("%.0f", activePercentage) %>%</div>
                             <div class="insight-progress">
-                                <div class="insight-progress-fill" style="width: <%= consistencyPercentage %>%"></div>
+                                <div class="insight-progress-fill" style="width: <%= activePercentage %>%"></div>
                             </div>
                             <div class="insight-description">Active vs Total Habits</div>
                         </div>

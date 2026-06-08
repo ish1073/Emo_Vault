@@ -4,10 +4,12 @@ import com.emovault.model.*;
 import com.emovault.dao.*;
 import com.emovault.util.*;
 import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.*;
 
+@WebServlet("/decision")
 public class DecisionServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     

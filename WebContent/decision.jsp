@@ -518,54 +518,61 @@
             <% 
                 Decision analysis = (Decision) request.getAttribute("analysis");
                 if (analysis != null) {
+                    // Null-safe getters with defaults
+                    String riskLevelA = analysis.getRiskLevelA() != null ? analysis.getRiskLevelA() : "Medium";
+                    String riskLevelB = analysis.getRiskLevelB() != null ? analysis.getRiskLevelB() : "Medium";
+                    String emotionalOutcomeA = analysis.getEmotionalOutcomeA() != null ? analysis.getEmotionalOutcomeA() : "Stable & Manageable";
+                    String emotionalOutcomeB = analysis.getEmotionalOutcomeB() != null ? analysis.getEmotionalOutcomeB() : "Stable & Manageable";
+                    String recommendedOption = analysis.getRecommendedOption() != null ? analysis.getRecommendedOption() : "A";
+                    String recommendation = analysis.getRecommendation() != null ? analysis.getRecommendation() : "Based on your patterns, both options have been evaluated.";
             %>
             <div class="analysis-result">
                 <div class="analysis-header">
                     <h3>Your Analysis</h3>
-                    <p class="situation-text">📍 <%= analysis.getSituation() %></p>
+                    <p class="situation-text">📍 <%= analysis.getSituation() != null ? analysis.getSituation() : "" %></p>
                 </div>
 
                 <!-- OPTIONS COMPARISON -->
                 <div class="options-comparison">
                     <!-- OPTION A -->
-                    <div class="option-card <%= "A".equals(analysis.getRecommendedOption()) ? "recommended" : "" %>">
-                        <% if ("A".equals(analysis.getRecommendedOption())) { %>
+                    <div class="option-card <%= "A".equals(recommendedOption) ? "recommended" : "" %>">
+                        <% if ("A".equals(recommendedOption)) { %>
                             <div class="recommended-badge">✓ Recommended</div>
                         <% } %>
                         <div class="option-label">Option A</div>
-                        <p class="option-text"><%= analysis.getOptionA() %></p>
+                        <p class="option-text"><%= analysis.getOptionA() != null ? analysis.getOptionA() : "" %></p>
 
                         <div class="risk-indicator">
                             <span class="risk-label">Risk:</span>
-                            <span class="risk-badge risk-<%= analysis.getRiskLevelA().toLowerCase() %>">
-                                <%= analysis.getRiskLevelA() %>
+                            <span class="risk-badge risk-<%= riskLevelA.toLowerCase() %>">
+                                <%= riskLevelA %>
                             </span>
                         </div>
 
                         <div class="emotional-outcome">
                             <strong>Emotional Outcome:</strong><br>
-                            <%= analysis.getEmotionalOutcomeA() %>
+                            <%= emotionalOutcomeA %>
                         </div>
                     </div>
 
                     <!-- OPTION B -->
-                    <div class="option-card <%= "B".equals(analysis.getRecommendedOption()) ? "recommended" : "" %>">
-                        <% if ("B".equals(analysis.getRecommendedOption())) { %>
+                    <div class="option-card <%= "B".equals(recommendedOption) ? "recommended" : "" %>">
+                        <% if ("B".equals(recommendedOption)) { %>
                             <div class="recommended-badge">✓ Recommended</div>
                         <% } %>
                         <div class="option-label">Option B</div>
-                        <p class="option-text"><%= analysis.getOptionB() %></p>
+                        <p class="option-text"><%= analysis.getOptionB() != null ? analysis.getOptionB() : "" %></p>
 
                         <div class="risk-indicator">
                             <span class="risk-label">Risk:</span>
-                            <span class="risk-badge risk-<%= analysis.getRiskLevelB().toLowerCase() %>">
-                                <%= analysis.getRiskLevelB() %>
+                            <span class="risk-badge risk-<%= riskLevelB.toLowerCase() %>">
+                                <%= riskLevelB %>
                             </span>
                         </div>
 
                         <div class="emotional-outcome">
                             <strong>Emotional Outcome:</strong><br>
-                            <%= analysis.getEmotionalOutcomeB() %>
+                            <%= emotionalOutcomeB %>
                         </div>
                     </div>
                 </div>
@@ -574,13 +581,13 @@
                 <div class="recommendation-box">
                     <h4>💡 Our Recommendation</h4>
                     <p class="recommended-text">
-                        <strong>Choose Option <%= analysis.getRecommendedOption() %></strong><br><br>
-                        <%= analysis.getRecommendation() %>
+                        <strong>Choose Option <%= recommendedOption %></strong><br><br>
+                        <%= recommendation %>
                     </p>
                     <form method="POST" action="/EmoVault/decision" style="display: inline;">
                         <input type="hidden" name="action" value="record">
                         <input type="hidden" name="decisionId" value="<%= analysis.getDecisionId() %>">
-                        <input type="hidden" name="chosenOption" value="<%= analysis.getRecommendedOption() %>">
+                        <input type="hidden" name="chosenOption" value="<%= recommendedOption %>">
                         <button type="submit" class="choose-btn">Accept Recommendation</button>
                     </form>
                 </div>

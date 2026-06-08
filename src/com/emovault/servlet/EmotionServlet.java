@@ -1,6 +1,7 @@
 package com.emovault.servlet;
 
 import com.emovault.dao.EmotionDAO;
+import com.emovault.service.DataService;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.IOException;
@@ -84,6 +85,9 @@ public class EmotionServlet extends HttpServlet {
             boolean saved = emotionDAO.saveEmotion(userId, trigger.trim(), mood, intensity, response.trim());
             
             if (saved) {
+                // Clear cache to ensure fresh analysis data
+                DataService.clearUserCache(userId);
+                
                 // Redirect to dashboard to see updated mood
                 resp.sendRedirect(req.getContextPath() + "/dashboard");
                 return;

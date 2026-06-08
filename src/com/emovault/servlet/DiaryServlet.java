@@ -2,6 +2,7 @@ package com.emovault.servlet;
 
 import com.emovault.dao.DiaryDAO;
 import com.emovault.model.DiaryEntry;
+import com.emovault.service.DataService;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.IOException;
@@ -83,6 +84,9 @@ public class DiaryServlet extends HttpServlet {
         
         // Save diary entry
         int entryId = diaryDAO.saveDiaryEntry(userId, title.trim(), content.trim(), moodTag);
+        
+        // Clear cache to ensure fresh analysis data
+        DataService.clearUserCache(userId);
         
         // Retrieve and set diaries list for display
         List<DiaryEntry> diaries = diaryDAO.getUserDiaries(userId);

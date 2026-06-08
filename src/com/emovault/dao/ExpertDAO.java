@@ -11,7 +11,48 @@ import java.sql.*;
 public class ExpertDAO {
     
     /**
-     * Verify Expert credentials
+     * Verify Expert credentials using email
+     * @param email Expert email
+     * @param password Expert password (plain text)
+     * @return Expert ID if valid, -1 if invalid
+     */
+    public int verifyExpertCredentialsByEmail(String email, String password) {
+        String query = "SELECT expert_id, password_hash, expert_uid, expert_name, role FROM expert_accounts WHERE email = ? AND is_active = 1";
+        
+        try (Connection conn = DBConnection.getConnection()) {
+            if (conn == null) {
+                System.err.println("[ExpertDAO] Database connection failed");
+                return -1;
+            }
+            
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, email);
+                ResultSet rs = stmt.executeQuery();
+                
+                if (rs.next()) {
+                    String storedHash = rs.getString("password_hash");
+                    
+                    // Verify password
+                    if (PasswordUtil.verifyPassword(password, storedHash)) {
+                        System.out.println("[ExpertDAO] Expert login successful: " + email);
+                        return rs.getInt("expert_id");
+                    } else {
+                        System.out.println("[ExpertDAO] Invalid password for expert: " + email);
+                    }
+                } else {
+                    System.out.println("[ExpertDAO] Expert email not found: " + email);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("[ExpertDAO] Error verifying expert credentials: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        return -1;
+    }
+    
+    /**
+     * Verify Expert credentials using expert ID (legacy method)
      * @param expertId Expert ID
      * @param password Expert password (plain text)
      * @return Expert ID if valid, -1 if invalid

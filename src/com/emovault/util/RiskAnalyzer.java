@@ -158,13 +158,20 @@ public class RiskAnalyzer {
                 suggestions.add("📞 Weekly check-in - Have one meaningful conversation daily");
             } else if (tag.contains("fear")) {
                 suggestions.add("😨 Exposure practice - Face one small fear daily");
-                suggestions.add("🎯 Goal setting - Break large goals into smaller steps");
-            } else if (tag.contains("health")) {
-                suggestions.add("🏃 Exercise - 20-minute daily movement");
-                suggestions.add("🥗 Nutrition - Prepare one healthy meal daily");
             }
         }
 
         return suggestions;
+    }
+
+    // Get total count of regrets for a user
+    public int getRegretsCount(int userId) {
+        RegretDAO regretDAO = new RegretDAO(connection);
+        try {
+            return regretDAO.countRegrets(userId);
+        } catch (Exception e) {
+            System.err.println("[RiskAnalyzer] Error getting regrets count: " + e.getMessage());
+            return 0;
+        }
     }
 }

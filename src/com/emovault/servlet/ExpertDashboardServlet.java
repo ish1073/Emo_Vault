@@ -2,16 +2,21 @@ package com.emovault.servlet;
 
 import com.emovault.dao.RuleDAO;
 import com.emovault.model.Rule;
+import com.emovault.service.ExpertAnalyticsService;
 import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.*;
 
 /**
- * ExpertDashboardServlet - Displays expert dashboard with rules and insights
+ * ExpertDashboardServlet - Displays expert dashboard with real-time analytics
+ * Now uses actual user data instead of static/hardcoded values
  */
+@WebServlet("/expert_dashboard")
 public class ExpertDashboardServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private ExpertAnalyticsService analyticsService = new ExpertAnalyticsService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -29,17 +34,48 @@ public class ExpertDashboardServlet extends HttpServlet {
         // Create rules table if needed
         RuleDAO.createRulesTable();
 
-        // Get system statistics
-        RuleDAO ruleDAO = new RuleDAO();
-        Map<String, Object> stats = ruleDAO.getSystemStatistics();
+        // Get system statistics from real data
+        Map<String, Object> systemStats = analyticsService.getSystemOverview();
+        
+        // Get emotional trend summary
+        Map<String, Object> trendSummary = analyticsService.getEmotionalTrendSummary();
+        
+        // Get high risk users
+        List<Map<String, Object>> highRiskUsers = analyticsService.getHighRiskUsers(5);
+        
+        // Get recent emotional spikes
+        List<Map<String, Object>> recentSpikes = analyticsService.getRecentEmotionalSpikes(10);
+        
+        // Get users with regret patterns
+        List<Map<String, Object>> regretPatternUsers = analyticsService.getUsersWithRegretPatterns(5);
+        
+        // Get declining habit users
+        List<Map<String, Object>> decliningHabitUsers = analyticsService.getDecliningHabitUsers(5);
+        
+        // Get users needing attention
+        List<Map<String, Object>> attentionUsers = analyticsService.getUsersNeedingAttention(10);
+        
+        // Get recent alerts
+        List<Map<String, Object>> recentAlerts = analyticsService.getRecentAlerts(15);
+        
+        // Get most common emotions
+        Map<String, Integer> commonEmotions = analyticsService.getMostCommonEmotions(7);
 
         // Get expert's rules
+        RuleDAO ruleDAO = new RuleDAO();
         List<Rule> rules = ruleDAO.getRulesByExpert(expertId);
-
-        // Get all active rules for reference
         List<Rule> allActiveRules = ruleDAO.getAllActiveRules();
 
-        request.setAttribute("stats", stats);
+        // Set attributes for JSP
+        request.setAttribute("systemStats", systemStats);
+        request.setAttribute("trendSummary", trendSummary);
+        request.setAttribute("highRiskUsers", highRiskUsers);
+        request.setAttribute("recentSpikes", recentSpikes);
+        request.setAttribute("regretPatternUsers", regretPatternUsers);
+        request.setAttribute("decliningHabitUsers", decliningHabitUsers);
+        request.setAttribute("attentionUsers", attentionUsers);
+        request.setAttribute("recentAlerts", recentAlerts);
+        request.setAttribute("commonEmotions", commonEmotions);
         request.setAttribute("rules", rules);
         request.setAttribute("allActiveRules", allActiveRules);
         request.setAttribute("ruleCount", rules.size());

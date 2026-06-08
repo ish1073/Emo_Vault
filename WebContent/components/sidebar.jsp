@@ -1,7 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <%
-    String currentPage = request.getParameter("currentPage");
+    String currentPage = (String) request.getAttribute("currentPage");
+    if (currentPage == null) {
+        currentPage = request.getParameter("currentPage");
+    }
     if (currentPage == null) {
         currentPage = "";
     }

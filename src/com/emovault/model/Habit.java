@@ -10,6 +10,7 @@ public class Habit {
     private int userId;
     private String name;
     private String description;
+    private String suggestedByTag;
     private boolean active;
     private Timestamp createdDate;
     private int currentStreak;
@@ -27,6 +28,7 @@ public class Habit {
         this.createdDate = createdDate;
         this.currentStreak = 0;
         this.consistencyScore = 0;
+        this.suggestedByTag = "";
     }
 
     // Getters and Setters
@@ -92,6 +94,14 @@ public class Habit {
 
     public void setConsistencyScore(int consistencyScore) {
         this.consistencyScore = consistencyScore;
+    }
+
+    public String getSuggestedByTag() {
+        return suggestedByTag;
+    }
+
+    public void setSuggestedByTag(String suggestedByTag) {
+        this.suggestedByTag = suggestedByTag;
     }
 
     @Override
